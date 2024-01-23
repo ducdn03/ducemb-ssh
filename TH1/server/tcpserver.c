@@ -56,7 +56,7 @@ main (void)
     int sockfd, connfd, len;
     struct sockaddr_in servaddr, cli;
     FILE * fp;
-    char * file_name = "test.jpg";
+    char * file_name = "test.txt";
 
     // socket create and verification
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
