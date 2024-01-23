@@ -26,17 +26,6 @@ receive_file(char file_name[], int sockfd)
     {
     	fwrite(buffer,sizeof(char),nrecv,fp);
     }
-    /* while (1)
-    {
-    	nrecv = recv(sockfd, buffer, BUFFER_SIZE, 0);
-    	if (nrecv <= 0)
-	    {
-      	    break;
-      	    return;
-    	}
-    	fprintf(fp, "%s", buffer);
-    	bzero(buffer, BUFFER_SIZE);
-    }*/
     return;
 }
 
