@@ -10,20 +10,6 @@
 #define SA struct sockaddr
 #define BUFFER_SIZE     1024
 
-void
-write_buffer (char buffer[],const char source[])
-{
-    int i = 0;
-    for (i = 0;i < BUFFER_SIZE;i++)
-    {
-        buffer[i] = '\0';
-    }
-    for (i = 0;i < strlen(source);i++)
-    {
-        buffer[i] = source[i];
-    }
-}
-
 int
 send_file(char file_name[],int connfd)
 {
@@ -72,7 +58,6 @@ func (int connfd)
     memset(file_name,'\0',sizeof(file_name));
     int n;
     int loop_flag = 1;
-    int mode = 0;
     while (loop_flag)
     {
         bzero(buffer,BUFFER_SIZE);

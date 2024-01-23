@@ -82,6 +82,10 @@ void func(int sockfd)
             loop_flag = 0;
             break;
         }
+        if (file_name[strlen(file_name) - 1] == '\n')
+        {
+            file_name[strlen(file_name) - 1] = '\0';
+        }
         strcpy(file_name,buffer);
         bzero(buffer,BUFFER_SIZE);
         receive_file(file_name, sockfd);
