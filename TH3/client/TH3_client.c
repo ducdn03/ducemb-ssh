@@ -11,29 +11,6 @@
 #define BUFFER_SIZE     1024
 
 void
-send_file(char file_name[],int connfd)
-{
-    FILE * fp;
-    char buffer[BUFFER_SIZE];
-    fp = fopen(file_name,"r");
-    if (fp == NULL)
-    {
-        return;
-    }
-    else
-    {
-        while (fgets(buffer,BUFFER_SIZE,fp) != NULL)
-        {
-            if ((-1) == send(connfd,buffer,sizeof(buffer),0))
-            {
-                printf("Error...");
-            }
-            bzero(buffer,BUFFER_SIZE);
-        }
-    }
-}
-
-void
 receive_file(char file_name[], int sockfd)
 {
     char buffer[BUFFER_SIZE] = {0};
