@@ -11,6 +11,20 @@
 #define BUFFER_SIZE     1024
 
 void
+receive_list(int sockfd)
+{
+    char buffer[BUFFER_SIZE];
+    bzero(buffer, BUFFER_SIZE);
+    int nrecv;
+    while ((nrecv = recv(sockfd,buffer,BUFFER_SIZE,0)) > 0)
+    {
+        printf("%s\n", buffer);
+        bzero(buffer, BUFFER_SIZE);
+    }
+    return;
+}
+
+void
 receive_file(char file_name[], int sockfd)
 {
     char buffer[BUFFER_SIZE] = {0};
@@ -48,14 +62,22 @@ void func(int sockfd)
             loop_flag = 0;
             break;
         }
-        if (file_name[strlen(file_name) - 1] == '\n')
+        else if (strncmp(buffer,"list",4) == 0)
         {
-            file_name[strlen(file_name) - 1] = '\0';
+            receive_list(sockfd);
+            printf("Received list successfully\n");
         }
-        strcpy(file_name,buffer);
-        bzero(buffer,BUFFER_SIZE);
-        receive_file(file_name, sockfd);
-        printf("File received successfully\n");
+        else
+        {
+            if (file_name[strlen(file_name) - 1] == '\n')
+            {
+                file_name[strlen(file_name) - 1] = '\0';
+            }
+            strcpy(file_name,buffer);
+            bzero(buffer,BUFFER_SIZE);
+            receive_file(file_name, sockfd);
+            printf("File received successfully\n");
+        }
     }
     return;
 }
