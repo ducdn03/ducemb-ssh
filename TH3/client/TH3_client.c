@@ -16,10 +16,15 @@ receive_list(int sockfd)
     char buffer[BUFFER_SIZE];
     bzero(buffer, BUFFER_SIZE);
     int nrecv;
-    while ((nrecv = recv(sockfd,buffer,BUFFER_SIZE,0)) > 0)
+    while (1)
     {
-        printf("%s\n", buffer);
-        bzero(buffer, BUFFER_SIZE);
+        nrecv = recv(sockfd,buffer,BUFFER_SIZE,0);
+        if (nrecv <= 0)
+        {
+            return;
+        }
+        prinf("%s\n",buffer);
+        bzero(buffer,BUFFER_SIZE);
     }
     return;
 }
@@ -36,14 +41,25 @@ receive_file(char file_name[], int sockfd)
     	return;
     }
     int nrecv;
-    while ((nrecv = recv(sockfd,buffer,BUFFER_SIZE,0)) > 0)
+    /*while ((nrecv = recv(sockfd,buffer,BUFFER_SIZE,0)) > 0)
     {
     	fwrite(buffer,sizeof(char),nrecv,fp);
+    }*/
+    while (1)
+    {
+        nrecv = recv(sockfd,buffer,BUFFER_SIZE,0);
+        if (nrecv <= 0)
+        {
+            return;
+        }
+        fwrite(buffer,sizeof(char),nrecv,fp);
+        bzero(buffer,BUFFER_SIZE);
     }
     return;
 }
 
-void func(int sockfd)
+void
+func(int sockfd)
 {
     char buffer[BUFFER_SIZE];
     char file_name[BUFFER_SIZE];
