@@ -99,6 +99,9 @@ func (int connfd)
         else if (strncmp(buffer,"list",4) == 0)
         {
             send_list(connfd);
+            bzero(buffer,BUFFER_SIZE);
+            buffer[0] = '\0';
+            send(connfd,buffer,BUFFER_SIZE,0);
             printf("Send list successfully...\n");
         }
         else
@@ -111,6 +114,9 @@ func (int connfd)
             printf("File Name : %s\n",file_name);
             bzero(buffer,BUFFER_SIZE);
             send_file(file_name,connfd);
+            bzero(buffer,BUFFER_SIZE);
+            buffer[0] = '\0';
+            send(connfd,buffer,BUFFER_SIZE,0);
             printf("Send successfully...\n");
         }
     }

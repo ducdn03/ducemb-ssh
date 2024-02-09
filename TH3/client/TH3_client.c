@@ -16,8 +16,13 @@ receive_list(int sockfd)
     char buffer[BUFFER_SIZE];
     bzero(buffer, BUFFER_SIZE);
     int nrecv;
-    while ((nrecv = recv(sockfd,buffer,BUFFER_SIZE,0)) > 0)
+    while (1)
     {
+        nrecv = recv(sockfd,buffer,BUFFER_SIZE,0);
+        if (buffer[0] == '\0')
+        {
+            break;
+        }
         printf("%s\n", buffer);
         bzero(buffer, BUFFER_SIZE);
     }
@@ -29,6 +34,7 @@ receive_file(char file_name[], int sockfd)
 {
     char buffer[BUFFER_SIZE] = {0};
     FILE * fp;
+    int receive_flag = 1;
     fp = fopen(file_name, "wb");
     if (fp == NULL)
     {
@@ -36,9 +42,16 @@ receive_file(char file_name[], int sockfd)
     	return;
     }
     int nrecv;
-    while ((nrecv = recv(sockfd,buffer,BUFFER_SIZE,0)) > 0)
+    while (receive_flag)
     {
-    	fwrite(buffer,sizeof(char),nrecv,fp);
+        bzero(buffer,BUFFER_SIZE);
+    	nrecv = recv(sockfd,buffer,BUFFER_SIZE,0);
+    	if (buffer[0] == '\0')
+    	{
+    	    receive_flag = 0;
+    	    break;
+    	}
+    	fwrite(buffer,sizeof(char),nrecv,fp);        
     }
     return;
 }
@@ -55,7 +68,7 @@ void func(int sockfd)
         printf("Enter the string : ");
         memset(file_name,'\0', sizeof(file_name));
         n = 0;
-        while((buffer[n++] = getchar()) != '\n');
+        fgets(buffer,BUFFER_SIZE,stdin);
         send(sockfd,buffer,sizeof(buffer),0);
         if (strncmp(buffer,"exit",4) == 0)
         {
@@ -69,11 +82,11 @@ void func(int sockfd)
         }
         else
         {
+            strcpy(file_name,buffer);
             if (file_name[strlen(file_name) - 1] == '\n')
             {
                 file_name[strlen(file_name) - 1] = '\0';
             }
-            strcpy(file_name,buffer);
             bzero(buffer,BUFFER_SIZE);
             receive_file(file_name, sockfd);
             printf("File received successfully\n");
