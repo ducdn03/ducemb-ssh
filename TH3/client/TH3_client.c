@@ -56,7 +56,8 @@ receive_file(char file_name[], int sockfd)
     return;
 }
 
-void func(int sockfd)
+void
+func(int sockfd)
 {
     char buffer[BUFFER_SIZE];
     char file_name[BUFFER_SIZE];
