@@ -62,17 +62,15 @@ send_file(char file_name[],int connfd)
                 perror("Failed to write to socket");
                 return -1;
             }
+            bzero(buffer,BUFFER_SIZE);
         }
-        if (nread < BUFFER_SIZE)
+        else
         {
-            if (feof(fp))
-            {
-                printf("End of file \n");
-            }
-            if (ferror(fp))
-            {
-                printf("error reading \n");
-            }
+            break;
+        }
+        if (feof(fp))
+        {
+            printf("End of file \n");
             break;
         }
     }
