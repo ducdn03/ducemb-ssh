@@ -7,6 +7,7 @@
 #include <sys/types.h> 
 #include <unistd.h> // read(), write(), close()
 #include <dirent.h>
+#include <arpa/inet.h>
 #define PORT 8080 
 #define SA struct sockaddr
 #define BUFFER_SIZE     1024
@@ -32,6 +33,7 @@ send_list(int connfd)
                     perror("Failed to write to socket");
                     return;
                 }
+                send(connfd,"\n",1,0);
             }
         }
         closedir(d);
@@ -44,6 +46,7 @@ send_file(char file_name[],int connfd)
 {
     FILE * fp;
     fp = fopen(file_name,"rb");
+    unsigned long long filesize = 0;
     if (fp == NULL)
     {
         perror("Failed to open file");
@@ -56,7 +59,8 @@ send_file(char file_name[],int connfd)
         int nread = fread(buffer,1,BUFFER_SIZE,fp);
         if (nread > 0)
         {
-            printf("Sending \n");
+            //printf("Sending \n");
+            filesize += nread;
             if (send(connfd,buffer,nread,0) < 0)
             {
                 perror("Failed to write to socket");
@@ -74,6 +78,7 @@ send_file(char file_name[],int connfd)
             break;
         }
     }
+    printf("Send : %lld bytes\n",filesize);
     return 0;
 }
 
@@ -176,7 +181,9 @@ int main(void)
     {
         printf("server accept the client...\n"); 
     }
-    // Function for chatting between client and server 
+    // Function for chatting between client and server
+    char * ip = inet_ntoa(cli.sin_addr);
+    printf("Connected from %s:%d\n",ip,ntohs(cli.sin_port));
     func(connfd);
    
     // After chatting close the socket
