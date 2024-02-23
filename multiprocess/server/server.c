@@ -142,9 +142,11 @@ int main(void)
                 close(sockfd);
                 bzero(buffer, BUFFER_SIZE);
                 recv(connfd, buffer, BUFFER_SIZE, 0);
-                printf("From client: %s\n,buffer");
+                printf("From client: %s\n",buffer);
                 if (strncmp(buffer, "exit", 4) == 0)
                 {
+                    printf("Disconnected from %s:%d\n", inet_ntoa(cli.sin_addr),\
+                    ntohs(cli.sin_port));
                     close(connfd);
                     break;
                 }
