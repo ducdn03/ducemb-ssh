@@ -94,6 +94,7 @@ int main(void)
         bzero(buffer, BUFFER_SIZE);
         printf("Enter the string : ");
         fgets(buffer, BUFFER_SIZE, stdin);
+        send(sockfd, buffer, sizeof(buffer), 0);
         if (strncmp(buffer, "exit", 4) == 0)
         {
             send(sockfd, buffer, sizeof(buffer), 0);

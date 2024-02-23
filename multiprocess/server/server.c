@@ -17,7 +17,7 @@ void send_list(int connfd)
 {
     DIR *d;
     struct dirent *dir;
-    d = opendir("."); // Open the folder
+    d = opendir("/home/ducdn/code/ducemb-ssh/multiprocess/server"); // Open the folder
     int len;
     char buffer[BUFFER_SIZE];
     memset(buffer, '\0', BUFFER_SIZE);
