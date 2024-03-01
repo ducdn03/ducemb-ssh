@@ -25,7 +25,7 @@ void receive_list(int sockfd)
         {
             break;
         }
-        printf("%s\n", buffer);
+        printf("%s", buffer);
         bzero(buffer, BUFFER_SIZE);
     }
     return;

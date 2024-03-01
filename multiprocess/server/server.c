@@ -105,6 +105,7 @@ int main(void)
         printf("Socket successfully created..\n");
     }
     bzero(&servaddr, sizeof(servaddr));
+    // set socket option to reuse the port
     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int)) < 0)
     {
         perror("setsockopt(SO_REUSEADDR) failed");
