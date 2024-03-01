@@ -106,11 +106,11 @@ int main(void)
     }
     bzero(&servaddr, sizeof(servaddr));
     // set socket option to reuse the port
-    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int)) < 0)
+    /*if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int)) < 0)
     {
         perror("setsockopt(SO_REUSEADDR) failed");
         exit(0);
-    }
+    }*/
 
     // assign IP, PORT
     servaddr.sin_family = AF_INET;
@@ -120,7 +120,7 @@ int main(void)
     // Binding newly created socket to given IP and verification
     if ((bind(sockfd, (SA *)&servaddr, sizeof(servaddr))) != 0)
     {
-        printf("socket bind failed...\n");
+        perror("socket bind failed...\n");
         exit(0);
     }
     else
@@ -201,7 +201,7 @@ int main(void)
                         send(connfd, buffer, BUFFER_SIZE, 0);
                         printf("Send list successfully...\n");
                     }
-                    else
+                    else if (strncmp(buffer, ".", 1) == 0)
                     {
                         strcpy(file_name, buffer);
                         if (file_name[strlen(file_name) - 1] == '\n')
@@ -215,6 +215,13 @@ int main(void)
                         buffer[0] = '\0';
                         send(connfd, buffer, BUFFER_SIZE, 0);
                         printf("Send successfully...\n");
+                    }
+                    else
+                    {
+                        bzero(buffer, BUFFER_SIZE);
+                        printf("To client: ");
+                        fgets(buffer, BUFFER_SIZE, stdin);
+                        send(connfd, buffer, sizeof(buffer), 0);
                     }
                 }
             }

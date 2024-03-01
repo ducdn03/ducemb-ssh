@@ -54,6 +54,7 @@ void receive_file(char file_name[], int sockfd)
         }
         fwrite(buffer, sizeof(char), nrecv, fp);
     }
+    fclose(fp);
     return;
 }
 
@@ -63,34 +64,36 @@ int main(void)
     int sockfd, connfd, len;
     char buffer[BUFFER_SIZE];
     char file_name[BUFFER_SIZE];
-    // socket create and verification
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd == -1)
-    {
-        printf("socket creation failed...\n");
-        exit(0);
-    }
-    else
-    {
-        printf("Socket successfully created..\n");
-    }
-    bzero(&servaddr, sizeof(servaddr));
-
-    // assign IP, PORT
-    servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    servaddr.sin_port = htons(PORT);
-    if (connect(sockfd, (SA *)&servaddr, sizeof(servaddr)) != 0)
-    {
-        printf("connection with the server failed...\n");
-        exit(0);
-    }
-    else
-    {
-        printf("connected to the server..\n");
-    }
+    int initflag = 0;
     while (1)
     {
+        // socket create and verification
+        sockfd = socket(AF_INET, SOCK_STREAM, 0);
+        if (sockfd == -1)
+        {
+            printf("socket creation failed...\n");
+            exit(0);
+        }
+        else if (initflag == 0)
+        {
+            initflag = 1;
+            printf("Socket successfully created..\n");
+        }
+        bzero(&servaddr, sizeof(servaddr));
+
+        // assign IP, PORT
+        servaddr.sin_family = AF_INET;
+        servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+        servaddr.sin_port = htons(PORT);
+        if (connect(sockfd, (SA *)&servaddr, sizeof(servaddr)) != 0)
+        {
+            printf("connection with the server failed...\n");
+            exit(0);
+        }
+        else if (initflag == 0)
+        {
+            printf("connected to the server..\n");
+        }
         bzero(buffer, BUFFER_SIZE);
         printf("Enter the string : ");
         fgets(buffer, BUFFER_SIZE, stdin);
@@ -105,7 +108,7 @@ int main(void)
             receive_list(sockfd);
             printf("Received list successfully\n");
         }
-        else
+        else if (strncmp(buffer, ".", 1) == 0)
         {
             strcpy(file_name, buffer);
             if (file_name[strlen(file_name) - 1] == '\n')
@@ -116,6 +119,13 @@ int main(void)
             receive_file(file_name, sockfd);
             printf("File received successfully\n");
         }
+        else
+        {
+            bzero(buffer, BUFFER_SIZE);
+            recv(sockfd, buffer, sizeof(buffer), 0);
+            printf("From Server: %s\n", buffer);
+        }
+        close(sockfd);
     }
     return 0;
 }
