@@ -127,5 +127,6 @@ int main(void)
         }
         close(sockfd);
     }
+    close(sockfd);
     return 0;
 }
